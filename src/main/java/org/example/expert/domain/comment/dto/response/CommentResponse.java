@@ -3,6 +3,8 @@ package org.example.expert.domain.comment.dto.response;
 import lombok.Getter;
 import org.example.expert.domain.user.dto.response.UserResponse;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class CommentResponse {
 
@@ -15,4 +17,5 @@ public class CommentResponse {
         this.contents = contents;
         this.user = user;
     }
+
 }

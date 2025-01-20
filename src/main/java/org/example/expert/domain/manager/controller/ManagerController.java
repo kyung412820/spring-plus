@@ -7,7 +7,9 @@ import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.manager.dto.request.ManagerSaveRequest;
 import org.example.expert.domain.manager.dto.response.ManagerResponse;
 import org.example.expert.domain.manager.dto.response.ManagerSaveResponse;
+import org.example.expert.domain.manager.entity.Manager;
 import org.example.expert.domain.manager.service.ManagerService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +42,14 @@ public class ManagerController {
             @PathVariable long managerId
     ) {
         managerService.deleteManager(authUser, todoId, managerId);
+    }
+    @PostMapping("/register")
+    public ResponseEntity<String> registerManager(@RequestBody Manager manager) {
+        try {
+            managerService.registerManager(manager);
+            return ResponseEntity.ok("Manager registered successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register manager.");
+        }
     }
 }

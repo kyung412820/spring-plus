@@ -27,22 +27,49 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
-    annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    // bcrypt
+    testImplementation 'org.springframework.security:spring-security-test'
+    implementation 'com.querydsl:querydsl-jpa'
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+    implementation 'org.hibernate:hibernate-core:6.2.9.Final'
     implementation 'at.favre.lib:bcrypt:0.10.2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 
-    // jwt
-    compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+sourceSets {
+    main.java.srcDir "$buildDir/generated/querydsl"
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file("$buildDir/generated/querydsl")
+}
+
+def querydslDir = "$buildDir/generated/querydsl"
+tasks.register("cleanQuerydsl", Delete) {
+    delete querydslDir
+}
+
+tasks.named("clean") {
+    dependsOn tasks.named("cleanQuerydsl")
+}
+
+compileJava {
+    // Gradle 7.0 이상에서 doFirst는 권장되지 않습니다.
+    // 여기서 필요한 구성은 주로 폴더를 만드는 것에 관련된 것이므로, 이를 다른 방식으로 처리할 수 있습니다.
 }
